@@ -1,7 +1,6 @@
 import Products from "../modals/products.js";
 import fs from "fs"
 import path from "path"
-import products from "../modals/products.js";
 
 const __dirname = path.resolve();
 
@@ -137,8 +136,8 @@ export const ByPriceAndCategory = async (req, res) => {
 //pagination
 export const pagination = async (req, res) => {
     const { offset = 0, limit = 5 } = req.query;
-    if(!offset)return res.status(400).json({message:"Offset is required."})
-    if(!limit)return res.status(400).json({message:"Limit is required."})
+    if (!offset) return res.status(400).json({ message: "Offset is required." })
+    if (!limit) return res.status(400).json({ message: "Limit is required." })
 
 
     try {
@@ -170,5 +169,63 @@ export const pagination = async (req, res) => {
 
     } catch (err) {
         return res.send(err);
+    }
+}
+
+
+//pagination - 
+
+export const paginationR = async (req, res) => {
+    try {
+        // console.log(req.query, "req.query")
+        const limit = (req.query.limit < 5 ? req.query.limit : 5);
+        const offset = req.query.offset || 0;
+        // console.log(limit, offset,"limit, offset")
+        // var ids = [];
+
+        //Write your Code here.
+        const resFromDB = await Products.find().skip(limit * offset).limit(limit).select('_id');
+
+        const ids = resFromDB.map(pro => pro._id)
+
+        res.send(ids);
+
+    } catch (err) {
+        res.send(err);
+    }
+}
+
+
+//get products using range
+
+export const getProductRange = async (req, res) => {
+
+    const { category, range } = req.query;
+    try {
+
+        let query = {};
+        // console.log(range)
+        if (category) {
+            query.category = category
+        }
+
+        if (range) {
+
+            const [minPrice, maxPrice] = range.split('-');
+            // console.log(minPrice, maxPrice,"chec here")
+            if (minPrice && maxPrice) {
+                query.price = { $gte: minPrice, $lte: maxPrice }
+            } else if (minPrice) {
+                query.price = { $gte: minPrice }
+            }
+        }
+        // console.log(query, "query")
+        // console.log(minPrice,maxPrice,"range")
+        const resFromMongo = await Products.find(query).exec();
+        res.json({"Total products in this price range":resFromMongo.length});
+
+
+    } catch (err) {
+        res.send(err);
     }
 }
