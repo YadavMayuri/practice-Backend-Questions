@@ -135,43 +135,43 @@ export const ByPriceAndCategory = async (req, res) => {
 
 
 //pagination
-export const pagination = async (req, res) => {
-    const { offset = 0, limit = 5 } = req.query;
-    if (!offset) return res.status(400).json({ message: "Offset is required." })
-    if (!limit) return res.status(400).json({ message: "Limit is required." })
+// export const pagination = async (req, res) => {
+//     const { offset = 0, limit = 5 } = req.query;
+//     if (!offset) return res.status(400).json({ message: "Offset is required." })
+//     if (!limit) return res.status(400).json({ message: "Limit is required." })
 
 
-    try {
-        const product = await Products.find()
-            .limit(limit * 1)
-            .skip((offset - 1) * limit)
-            .exec();
+//     try {
+//         const product = await Products.find()
+//             .limit(limit * 1)
+//             .skip((offset - 1) * limit)
+//             .exec();
 
-        const count = await Products.count();
+//         const count = await Products.count();
 
-        const CountProductsonPage = await Products.find()
-            .limit(limit * 1)
-            .skip((offset - 1) * limit)
-            .count()
+//         const CountProductsonPage = await Products.find()
+//             .limit(limit * 1)
+//             .skip((offset - 1) * limit)
+//             .count()
 
-        if (product[0]) {
-            res.send({
-                product,
-                "Total Pages": Math.ceil(count / limit),
-                "Current Page": offset,
-                "Total Products on this page": CountProductsonPage
-            });
-        } else {
-            return res
-                .status(404)
-                .json({ message: "No more products found." })
-        }
+//         if (product[0]) {
+//             res.send({
+//                 product,
+//                 "Total Pages": Math.ceil(count / limit),
+//                 "Current Page": offset,
+//                 "Total Products on this page": CountProductsonPage
+//             });
+//         } else {
+//             return res
+//                 .status(404)
+//                 .json({ message: "No more products found." })
+//         }
 
 
-    } catch (err) {
-        return res.send(err);
-    }
-}
+//     } catch (err) {
+//         return res.send(err);
+//     }
+// }
 
 
 //pagination - 
