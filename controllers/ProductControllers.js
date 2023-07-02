@@ -26,8 +26,9 @@ export const addProduct = async (req, res) => {
             };
 
             Products.create(newproduct);
-            // res.status(200).json({message:"Products added to DB successfully."})
         }
+            res.status(200).json({message:"Products added to DB successfully."})
+
 
     } catch (err) {
         res.send(err)
